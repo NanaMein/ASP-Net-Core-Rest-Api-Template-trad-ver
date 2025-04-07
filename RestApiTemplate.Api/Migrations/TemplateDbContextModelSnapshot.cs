@@ -30,15 +30,18 @@ namespace RestApiTemplate.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("DateCreated")
+                    b.Property<DateTime>("DateLastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("DateOnlyCreated")
                         .HasColumnType("date");
+
+                    b.Property<DateTime>("DateTimeCreated")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TimeCreated")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

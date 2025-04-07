@@ -4,7 +4,8 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateOnly DateCreated { get; set; }
-        public DateTime TimeCreated { get; set; }
+        public DateOnly DateOnlyCreated { get; set; }
+        public DateTime DateTimeCreated { get; set; }
+        public DateTime DateLastModified { get; set; }
     }
 }
