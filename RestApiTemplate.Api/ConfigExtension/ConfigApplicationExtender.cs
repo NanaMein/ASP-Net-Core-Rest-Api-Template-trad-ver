@@ -8,10 +8,11 @@ namespace RestApiTemplate.Api.ConfigExtension
         {
             if (app.Environment.IsDevelopment())
             {
+                //Scalar for testing and debug API
                 app.MapScalarApiReference();
                 app.MapOpenApi();
             }
-
+            //Middleware 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

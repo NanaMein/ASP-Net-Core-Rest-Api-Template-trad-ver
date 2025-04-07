@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestApiTemplate.Api.Data;
+using RestApiTemplate.Api.Mappings;
+using RestApiTemplate.Api.Repositories;
+using RestApiTemplate.Api.Services;
 
 namespace RestApiTemplate.Api.ConfigExtension
 {
@@ -9,8 +12,17 @@ namespace RestApiTemplate.Api.ConfigExtension
         {
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
+
+            //Configuration for SQL Server and Ef Core
             builder.Services.AddDbContext<TemplateDbContext>(opt => 
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            //Addscoped for service layer and repository layer
+            builder.Services.AddScoped<ITemplateService, TemplateService>();
+            builder.Services.AddScoped<ITemplateRepository, TemplateRepository>();
+
+            //Automapper
+            builder.Services.AddAutoMapper(typeof(AutoMappingServices));
 
         }
     }

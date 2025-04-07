@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RestApiTemplate.Api.Models;
 
 namespace RestApiTemplate.Api.Mappings
 {
@@ -6,7 +7,7 @@ namespace RestApiTemplate.Api.Mappings
     {
         public AutoMappingServices()
         {
-            //CreateMap<>();
+            CreateMap<TemplateModel, TemplateModel>();
         }
     }
 }

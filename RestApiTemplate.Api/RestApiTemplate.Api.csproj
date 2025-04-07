@@ -23,9 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Mappings\" />
     <Folder Include="ValueGenerators\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
