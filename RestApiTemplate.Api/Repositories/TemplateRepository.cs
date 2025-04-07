@@ -16,11 +16,54 @@ namespace RestApiTemplate.Api.Repositories
             this.mapper = mapper;
         }
 
-        public async Task<TemplateModel> CreateTemplateRepository(TemplateModel model)//CHECK CHECK
+        public async Task<TemplateModel> CreateTemplateRepository(TemplateModel model)
         {
             await context.Templates.AddAsync(model);
             await context.SaveChangesAsync();
             return model;
+        }
+
+        public async Task<List<TemplateModel>> GetAllRepository()
+        {
+            return await context.Templates.ToListAsync();
+        }
+
+        public async Task<TemplateModel?> GetByIdRepository(int id)
+        {
+            var exisitingTemplate = await context.Templates.FindAsync(id);
+            if (exisitingTemplate == null) {return null;}
+            return exisitingTemplate;
+
+        }
+
+        public async Task<TemplateModel?> UpdateTemplateRepository(TemplateModel model)
+        {
+            var exisitingTemplate = await context.Templates.FindAsync(model.Id);
+            if (exisitingTemplate == null) 
+            {
+                return null;
+            }
+
+            var updatingTemplate = mapper.Map(model , exisitingTemplate);
+            
+
+            await context.SaveChangesAsync();
+
+            return updatingTemplate;
+           
+
+
+            //if (exisitingTemplate != null)
+            //{
+            //    var updatedTemplate = mapper.Map(model, exisitingTemplate);
+
+            //    //explicit because of some experience. but usually or common approach is implicit
+            //    updatedTemplate.Id = exisitingTemplate.Id;
+            //    await context.SaveChangesAsync();
+
+            //    return updatedTemplate;
+            //}
+            //return null;
         }
 
         public async Task<bool> DeleteTemplateRepository(int id)
@@ -35,17 +78,8 @@ namespace RestApiTemplate.Api.Repositories
             return false;
         }
         
-        public async Task<List<TemplateModel>> GetAllRepository()//CHECK CHECK
-        {
-            return await context.Templates.ToListAsync();
-        }
 
-        public async Task<TemplateModel?> GetByIdRepository(int id)//CHECK CHECK
-        {
-            return await context.Templates.FindAsync(id);
-
-        }
-
+        //*****************************************************************************************************
         public async Task<bool> ResetAllTemplateDatabaseRepository()
         {
             var deletedDb = await context.Database.EnsureDeletedAsync();
@@ -58,22 +92,7 @@ namespace RestApiTemplate.Api.Repositories
 
         }
 
-        public async Task<TemplateModel?> UpdateTemplateRepository(int id, TemplateModel model)//CHECK CHECK
-        {
-            var exisitingTemplate = await context.Templates.FindAsync(id);
-
-            if (exisitingTemplate != null) 
-            {
-                var updatedTemplate = mapper.Map(model, exisitingTemplate);
-
-                //explicit because of some experience. but usually or common approach is implicit
-                updatedTemplate.Id = exisitingTemplate.Id;
-                await context.SaveChangesAsync();
-
-                return updatedTemplate;
-            }
-            return null;
-        }
+        
 
 
 
