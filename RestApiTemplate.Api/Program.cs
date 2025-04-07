@@ -8,8 +8,4 @@ var app = builder.Build();
 
 app.ConfigureApplication();
 
-
-
-
-
 app.Run();

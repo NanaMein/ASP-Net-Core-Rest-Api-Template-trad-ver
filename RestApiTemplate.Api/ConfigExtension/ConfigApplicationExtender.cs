@@ -1,4 +1,6 @@
-﻿namespace RestApiTemplate.Api.ConfigExtension
+﻿using Scalar.AspNetCore;
+
+namespace RestApiTemplate.Api.ConfigExtension
 {
     public static class ConfigApplicationExtender
     {
@@ -6,6 +8,7 @@
         {
             if (app.Environment.IsDevelopment())
             {
+                app.MapScalarApiReference();
                 app.MapOpenApi();
             }
 
