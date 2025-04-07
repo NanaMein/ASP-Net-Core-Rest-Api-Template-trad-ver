@@ -1,4 +1,6 @@
-﻿using RestApiTemplate.Api.Models;
+﻿using AutoMapper;
+using RestApiTemplate.Api.DTOs;
+using RestApiTemplate.Api.Models;
 using RestApiTemplate.Api.Repositories;
 
 namespace RestApiTemplate.Api.Services
@@ -6,10 +8,12 @@ namespace RestApiTemplate.Api.Services
     public class TemplateService:ITemplateService
     {
         private readonly ITemplateRepository repository;
+        private readonly IMapper mapper;
 
-        public TemplateService(ITemplateRepository repository)
+        public TemplateService(ITemplateRepository repository, IMapper mapper)
         {
             this.repository = repository;
+            this.mapper = mapper;
         }
 
         public async Task<TemplateModel> CreateTemplateAsync(TemplateModel model)//CHECK CHECK
@@ -22,9 +26,11 @@ namespace RestApiTemplate.Api.Services
             return await repository.DeleteTemplateRepository(id);
         }
 
-        public async Task<List<TemplateModel>> GetAllAsync()//CHECK CHECK
+        public async Task<List<TemplateModelDtoPostResponse>> GetAllAsync()//CHECK CHECK
         {
-            return await repository.GetAllRepository();
+            var originalList =  await repository.GetAllRepository();
+            var dtoList = mapper.Map<List<TemplateModelDtoPostResponse>>(originalList);
+            return dtoList;
         }
 
         public async Task<TemplateModel?> GetByIdAsync(int id)//CHECK CHECK
@@ -32,9 +38,14 @@ namespace RestApiTemplate.Api.Services
             return await repository.GetByIdRepository(id);
         }
 
-        public Task<TemplateModel> ResetAllTemplateDatabaseAsync()
+        public async Task<bool> ResetAllTemplateDatabaseAsync()
         {
-            throw new NotImplementedException();
+            return await repository.ResetAllTemplateDatabaseRepository();
+        }
+
+        public async Task<List<TemplateModel>> TestingGetAllAsync()
+        {
+            return await repository.GetAllRepository();
         }
 
         public async Task<TemplateModel?> UpdateTemplateAsync(int id, TemplateModel model)//CHECK CHECK

@@ -46,9 +46,16 @@ namespace RestApiTemplate.Api.Repositories
 
         }
 
-        public Task<TemplateModel> ResetAllTemplateDatabaseRepository()
+        public async Task<bool> ResetAllTemplateDatabaseRepository()
         {
-            throw new NotImplementedException();
+            var deletedDb = await context.Database.EnsureDeletedAsync();
+            if (deletedDb==false) { return false; }
+
+            var createdDb = await context.Database.EnsureCreatedAsync();
+            if (createdDb==false) { return false; }
+            return true;
+
+
         }
 
         public async Task<TemplateModel?> UpdateTemplateRepository(int id, TemplateModel model)//CHECK CHECK

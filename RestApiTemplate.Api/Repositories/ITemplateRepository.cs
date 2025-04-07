@@ -9,6 +9,6 @@ namespace RestApiTemplate.Api.Repositories
         Task<TemplateModel> CreateTemplateRepository(TemplateModel model);
         Task<TemplateModel?> UpdateTemplateRepository(int id, TemplateModel model);
         Task<bool> DeleteTemplateRepository(int id);
-        Task<TemplateModel> ResetAllTemplateDatabaseRepository();
+        Task<bool> ResetAllTemplateDatabaseRepository();
     }
 }
