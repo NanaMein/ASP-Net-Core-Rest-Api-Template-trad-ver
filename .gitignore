@@ -1,0 +1,48 @@
+# Visual Studio
+.vscode/
+
+# Build Results
+bin/
+obj/
+
+# User-specific Files
+*.swp
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# Packages
+*.nupkg
+*.snupkg
+Packages/
+
+# Generated Files
+*.designer.cs
+Generated/
+
+# Dependency Directories
+node_modules/
+
+# Configuration Files
+appsettings.json
+appsettings.*.json
+
+# Secrets
+.env
+*.env
+
+# Git-specific
+.git/
+
+# Other Backup and Temporary Files
+*.bak
+*.tmp
+*.cache
+
+
+#others
+.vs/
