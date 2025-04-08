@@ -39,6 +39,7 @@ namespace RestApiTemplate.Api.Repositories
         public async Task<TemplateModel?> UpdateTemplateRepository(TemplateModel model)
         {
             var exisitingTemplate = await context.Templates.FindAsync(model.Id);
+
             if (exisitingTemplate == null) 
             {
                 return null;
@@ -92,7 +93,13 @@ namespace RestApiTemplate.Api.Repositories
 
         }
 
-        
+        public async Task<bool> ExistingDataInRepository(int id)
+        {
+            var existingData = await context.Templates.FindAsync(id);
+            if (existingData != null) { return true; }
+            return false;
+        }
+
 
 
 
