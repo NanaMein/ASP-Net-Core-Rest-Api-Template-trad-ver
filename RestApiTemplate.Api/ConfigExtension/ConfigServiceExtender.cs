@@ -3,6 +3,7 @@ using RestApiTemplate.Api.Data;
 using RestApiTemplate.Api.Mappings;
 using RestApiTemplate.Api.Repositories;
 using RestApiTemplate.Api.Services;
+using RestApiTemplate.Api.ValueGenerators;
 
 namespace RestApiTemplate.Api.ConfigExtension
 {
@@ -23,6 +24,10 @@ namespace RestApiTemplate.Api.ConfigExtension
 
             //Automapper
             builder.Services.AddAutoMapper(typeof(AutoMappingServices));
+
+            //For strategy pattern
+            builder.Services.AddScoped<IDateOnlyValue, DateOnlyValue>();
+            builder.Services.AddScoped<IDateTimeValue, DateTimeValue>();
 
         }
     }
