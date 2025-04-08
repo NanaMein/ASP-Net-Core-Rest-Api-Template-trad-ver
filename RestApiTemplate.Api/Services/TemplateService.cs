@@ -2,6 +2,7 @@
 using RestApiTemplate.Api.DTOs;
 using RestApiTemplate.Api.Models;
 using RestApiTemplate.Api.Repositories;
+using RestApiTemplate.Api.ValueGenerators;
 
 namespace RestApiTemplate.Api.Services
 {
@@ -9,23 +10,25 @@ namespace RestApiTemplate.Api.Services
     {
         private readonly ITemplateRepository repository;
         private readonly IMapper mapper;
+        private readonly IDateOnlyValue dateOnly;
+        private readonly IDateTimeValue dateTime;
 
-        public TemplateService(ITemplateRepository repository, IMapper mapper)
+        public TemplateService(ITemplateRepository repository, IMapper mapper, IDateOnlyValue dateOnly, IDateTimeValue dateTime)
         {
             this.repository = repository;
             this.mapper = mapper;
+            this.dateOnly = dateOnly;
+            this.dateTime = dateTime;
         }
 
         public async Task<(int Id,TemplateModelDtoPostResponse)> CreateTemplateAsync(TemplateModelDtoPostRequest dto)//HTTP POST
         {
-            var date = DateTime.UtcNow;
-
             var newTemplate = new TemplateModel 
             {
                 Name = dto.Name,
-                DateOnlyCreated = DateOnly.FromDateTime(date),
-                DateLastModified = date,
-                DateTimeCreated = date
+                DateOnlyCreated = dateOnly.GenerateValue(),
+                DateTimeCreated = dateTime.GenerateValue(),
+                DateLastModified = dateTime.GenerateValue()
             };
 
             var createdTemplate = await repository.CreateTemplateRepository(newTemplate);
@@ -46,6 +49,7 @@ namespace RestApiTemplate.Api.Services
 
         public async Task<TemplateModelDtoPostResponse?> GetByIdAsync(int id)//HTTP GET by id
         {
+            //if (id <= 0||id==null) { return null; }
             var existingTemplate = await repository.GetByIdRepository(id);
             if (existingTemplate == null) 
             {
@@ -60,14 +64,13 @@ namespace RestApiTemplate.Api.Services
 
         public async Task<TemplateModelDtoPostResponse?> UpdateTemplateAsync(int id, TemplateModelDtoPostRequest dto)//HTTP PUT
         {
-            DateOnly dateOnly = DateOnly.FromDateTime(DateTime.UtcNow);
+
 
             var updatingTemplate = new TemplateModel
             {
                 Id = id,
-                Name= dto.Name,
-                DateLastModified=DateTime.UtcNow,
-                DateOnlyCreated=dateOnly
+                Name = dto.Name,
+                DateLastModified = dateTime.GenerateValue(),
             };
 
             var updatedTemplate = await repository.UpdateTemplateRepository(updatingTemplate);
@@ -85,8 +88,10 @@ namespace RestApiTemplate.Api.Services
 
 
         //for testing purposes 
-
         //*********************************************************************************************************
+
+
+
         public async Task<List<TemplateModel>> TestingGetAllAsync()
         {
             return await repository.GetAllRepository();
@@ -97,6 +102,10 @@ namespace RestApiTemplate.Api.Services
             return await repository.ResetAllTemplateDatabaseRepository();
         }
 
+        public async Task<bool> ExisitingDataAsync(int id)
+        {
+            return await repository.ExistingDataInRepository(id);
+        }
 
     }
 }

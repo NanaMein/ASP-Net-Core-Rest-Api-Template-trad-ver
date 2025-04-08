@@ -21,6 +21,8 @@ namespace RestApiTemplate.Api.Services
 
         Task<bool> ResetAllTemplateDatabaseAsync();
         Task<List<TemplateModel>> TestingGetAllAsync();
+        Task<bool> ExisitingDataAsync(int id);
+
 
     }
 }
