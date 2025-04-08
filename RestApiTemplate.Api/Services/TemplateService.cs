@@ -6,7 +6,7 @@ using RestApiTemplate.Api.ValueGenerators;
 
 namespace RestApiTemplate.Api.Services
 {
-    public class TemplateService:ITemplateService
+    public class TemplateService : ITemplateService
     {
         private readonly ITemplateRepository repository;
         private readonly IMapper mapper;
@@ -21,9 +21,9 @@ namespace RestApiTemplate.Api.Services
             this.dateTime = dateTime;
         }
 
-        public async Task<(int Id,TemplateModelDtoPostResponse)> CreateTemplateAsync(TemplateModelDtoPostRequest dto)//HTTP POST
+        public async Task<(Guid Id, TemplateModelDtoPostResponse)> CreateTemplateAsync(TemplateModelDtoPostRequest dto)//HTTP POST
         {
-            var newTemplate = new TemplateModel 
+            var newTemplate = new TemplateModel
             {
                 Name = dto.Name,
                 DateOnlyCreated = dateOnly.GenerateValue(),
@@ -35,7 +35,7 @@ namespace RestApiTemplate.Api.Services
 
             var dtoResponse = mapper.Map<TemplateModelDtoPostResponse>(createdTemplate);
 
-            return ( createdTemplate.Id , dtoResponse );
+            return (createdTemplate.GuidId, dtoResponse);
 
 
         }
@@ -47,28 +47,29 @@ namespace RestApiTemplate.Api.Services
             return dtoList;
         }
 
-        public async Task<TemplateModelDtoPostResponse?> GetByIdAsync(int id)//HTTP GET by id
+        public async Task<TemplateModelDtoPostResponse?> GetByIdAsync(Guid id)//HTTP GET by id
         {
-            //if (id <= 0||id==null) { return null; }
-            var existingTemplate = await repository.GetByIdRepository(id);
-            if (existingTemplate == null) 
+            //if (id == null) 
+            //{
+            //    return null; 
+            //}
+
+            var existingId = await repository.GetByIdRepository(id);
+            if (existingId == null) 
             {
                 return null;
             }
 
-            var dtoTemplate = mapper.Map<TemplateModelDtoPostResponse>(existingTemplate);
-
-            return dtoTemplate;
-
+            return mapper.Map<TemplateModelDtoPostResponse>(existingId);
         }
 
-        public async Task<TemplateModelDtoPostResponse?> UpdateTemplateAsync(int id, TemplateModelDtoPostRequest dto)//HTTP PUT
+        public async Task<TemplateModelDtoPostResponse?> UpdateTemplateAsync(Guid id, TemplateModelDtoPostRequest dto)//HTTP PUT
         {
 
 
             var updatingTemplate = new TemplateModel
             {
-                Id = id,
+                GuidId = id,
                 Name = dto.Name,
                 DateLastModified = dateTime.GenerateValue(),
             };
@@ -79,7 +80,7 @@ namespace RestApiTemplate.Api.Services
 
         }
 
-        public async Task<bool> DeleteTemplateAsync(int id)//HTTP DELETE
+        public async Task<bool> DeleteTemplateAsync(Guid id)//HTTP DELETE
         {
             return await repository.DeleteTemplateRepository(id);
         }
@@ -102,7 +103,7 @@ namespace RestApiTemplate.Api.Services
             return await repository.ResetAllTemplateDatabaseRepository();
         }
 
-        public async Task<bool> ExisitingDataAsync(int id)
+        public async Task<bool> ExisitingDataAsync(Guid id)
         {
             return await repository.ExistingDataInRepository(id);
         }

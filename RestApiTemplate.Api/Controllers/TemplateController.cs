@@ -4,6 +4,8 @@ using RestApiTemplate.Api.Data;
 using RestApiTemplate.Api.DTOs;
 using RestApiTemplate.Api.Models;
 using RestApiTemplate.Api.Services;
+using RestApiTemplate.Api.ValueGenerators;
+using System.Data.SqlTypes;
 using System.Threading.Tasks;
 
 namespace RestApiTemplate.Api.Controllers
@@ -14,51 +16,56 @@ namespace RestApiTemplate.Api.Controllers
     {
         private readonly ITemplateService service;
         private readonly TemplateDbContext context;
+        private readonly INullableGuidConverter converter;
 
-        public TemplateController(ITemplateService service, TemplateDbContext context)
+        public TemplateController(ITemplateService service, TemplateDbContext context, INullableGuidConverter converter)
         {
             this.service = service;
             this.context = context;
+            this.converter = converter;
         }
 
-        [HttpGet]
+        [HttpGet("v1")]
         public async Task<IActionResult> ReadAll() 
         {
             return Ok(await service.GetAllAsync()); 
         }
 
         [HttpGet]
-        [Route("{id:int}")]
-        public async Task<ActionResult<TemplateModelDtoPostResponse>> ReadById(int id) 
+        [Route("v0/{id:guid}")]
+        public async Task<IActionResult> ReadById(Guid id) 
         {
-            return Ok(await context.Templates.FindAsync(id));
+            if(!ModelState.IsValid) 
+            {
+                return BadRequest(ModelState);
+            }
+            var (x, y) = converter.GuidChecker(id);
 
-            //if (x == null) { return StatusCode(500, "what the fuck is wrong in my service and repository"); }
+            if (y == false) { return BadRequest(ModelState); }
 
-            var checkingData = await service.ExisitingDataAsync(id);
-            if (checkingData == false) { return StatusCode(500, "what the fuck"); }
-            //if (id <= 0) { return BadRequest(); }
-            var existingTemplate = await service.GetByIdAsync(id);
-            
-            if (existingTemplate == null) 
+            var existingId = await service.GetByIdAsync(x);
+            if (existingId == null) 
             {
                 return NotFound();
             }
-            return Ok(existingTemplate); 
+
+            return Ok(existingId);
         }
 
-        [HttpPost]
+        [HttpPost("v1")]
         public async Task<IActionResult> Create([FromBody]TemplateModelDtoPostRequest dto) 
-        { 
-            if(!ModelState.IsValid) 
+        {
+            //"name": "guid testing ",
+            //"dateLastModified": 2025-04-08T08:38:29.3938057Z for date modified
+            if (!ModelState.IsValid) 
             {
                 return BadRequest(ModelState); 
             }
             try
             {
-                var (Id, createdTemplate) = await service.CreateTemplateAsync(dto);
+                var (guid, createdTemplate) = await service.CreateTemplateAsync(dto);
 
-                return CreatedAtAction(nameof(ReadById), new { id = Id }, createdTemplate);
+                return CreatedAtAction(nameof(ReadById), new { id = guid }, createdTemplate);
             }
 
             //Optional Use of Problem Details (RFC 7807):
@@ -74,8 +81,9 @@ namespace RestApiTemplate.Api.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id ,[FromBody] TemplateModelDtoPostRequest dto) 
+        [HttpPut]
+        [Route("v0/{id:guid}")]
+        public async Task<IActionResult> Update(Guid id ,[FromBody] TemplateModelDtoPostRequest dto) 
         {
             if (!ModelState.IsValid)
             {
@@ -84,7 +92,15 @@ namespace RestApiTemplate.Api.Controllers
 
             try
             {
+                //var x = converter.Convert(id);
+
+                //if (id == null) { return NotFound("cant fucking find what you wanna update"); }
+
+                
+
+
                 var updatedTemplate = await service.UpdateTemplateAsync(id, dto);
+
                 if (updatedTemplate == null) 
                 {
                     return NotFound(); 
@@ -99,8 +115,9 @@ namespace RestApiTemplate.Api.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id) 
+        [HttpDelete]
+        [Route("v1/{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id) 
         {
             var deletedTemplate = await service.DeleteTemplateAsync(id);
             if (deletedTemplate == false) 
