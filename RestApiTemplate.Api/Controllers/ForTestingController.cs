@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RestApiTemplate.Api.Controllers
 {
-    [Route("api/development/testing")]
+    [Route("api/testing")]
     [ApiController]
     public class ForTestingController : ControllerBase
     {
@@ -30,7 +30,5 @@ namespace RestApiTemplate.Api.Controllers
             return Ok();
         }
 
-        //[HttpGet("get-id-by-test")]
-        //[Route("{id:int}")]
     }
 }

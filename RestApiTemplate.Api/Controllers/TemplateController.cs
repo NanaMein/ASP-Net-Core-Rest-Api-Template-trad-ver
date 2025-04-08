@@ -32,35 +32,40 @@ namespace RestApiTemplate.Api.Controllers
         }
 
         [HttpGet]
-        [Route("v0/{id:guid}")]
+        [Route("v1/{id:guid}")]
         public async Task<IActionResult> ReadById(Guid id) 
         {
             if(!ModelState.IsValid) 
             {
                 return BadRequest(ModelState);
             }
-            var (x, y) = converter.GuidChecker(id);
 
-            if (y == false) { return BadRequest(ModelState); }
-
-            var existingId = await service.GetByIdAsync(x);
-            if (existingId == null) 
+            try
             {
+                var existingId = await service.GetByIdAsync(id);
+                if (existingId != null)
+                {
+                    return Ok(existingId); 
+                }
+
                 return NotFound();
             }
 
-            return Ok(existingId);
+            catch (Exception) 
+            {
+                return StatusCode(500 , $" Unexpected error occured :"); 
+            }
         }
 
         [HttpPost("v1")]
         public async Task<IActionResult> Create([FromBody]TemplateModelDtoPostRequest dto) 
         {
-            //"name": "guid testing ",
-            //"dateLastModified": 2025-04-08T08:38:29.3938057Z for date modified
+            
             if (!ModelState.IsValid) 
             {
                 return BadRequest(ModelState); 
             }
+
             try
             {
                 var (guid, createdTemplate) = await service.CreateTemplateAsync(dto);
@@ -82,7 +87,7 @@ namespace RestApiTemplate.Api.Controllers
         }
 
         [HttpPut]
-        [Route("v0/{id:guid}")]
+        [Route("v1/{id:guid}")]
         public async Task<IActionResult> Update(Guid id ,[FromBody] TemplateModelDtoPostRequest dto) 
         {
             if (!ModelState.IsValid)
@@ -92,13 +97,6 @@ namespace RestApiTemplate.Api.Controllers
 
             try
             {
-                //var x = converter.Convert(id);
-
-                //if (id == null) { return NotFound("cant fucking find what you wanna update"); }
-
-                
-
-
                 var updatedTemplate = await service.UpdateTemplateAsync(id, dto);
 
                 if (updatedTemplate == null) 
