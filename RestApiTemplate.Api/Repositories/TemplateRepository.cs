@@ -46,18 +46,21 @@ namespace RestApiTemplate.Api.Repositories
             {
                 return null;
             }
+            exisitingTemplate.Name = model.Name;
+            exisitingTemplate.DateLastModified = model.DateLastModified;
 
-            var updatingTemplate = mapper.Map(model, exisitingTemplate);
+            //var updatingTemplate = mapper.Map(model.Name, exisitingTemplate.Name);
 
 
             await context.SaveChangesAsync();
 
-            return updatingTemplate;
+            return exisitingTemplate;
         }
 
         public async Task<bool> DeleteTemplateRepository(Guid id)
         {
             var existingTemplate = await context.TemplateModels.FindAsync(id);
+
             if (existingTemplate != null)
             {
                 context.TemplateModels.Remove(existingTemplate);

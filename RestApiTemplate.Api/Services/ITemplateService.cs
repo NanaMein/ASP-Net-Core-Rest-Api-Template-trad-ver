@@ -20,8 +20,10 @@ namespace RestApiTemplate.Api.Services
         //****************************************************************************************************
 
         Task<bool> ResetAllTemplateDatabaseAsync();
-        Task<List<TemplateModel>> TestingGetAllAsync();
         Task<bool> ExisitingDataAsync(Guid id);
+
+        //because of dto, its hard to show GuidId, thats why we use this service
+        Task<List<TemplateModel>> TestingGetAllAsync();
 
 
     }
