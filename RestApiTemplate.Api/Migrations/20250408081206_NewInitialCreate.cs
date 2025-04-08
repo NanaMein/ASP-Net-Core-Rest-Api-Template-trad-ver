@@ -6,24 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RestApiTemplate.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMade : Migration
+    public partial class NewInitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Templates",
+                name: "TemplateModels",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateCreated = table.Column<DateOnly>(type: "date", nullable: false),
-                    TimeCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DateOnlyCreated = table.Column<DateOnly>(type: "date", nullable: false),
+                    DateTimeCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateLastModified = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Templates", x => x.Id);
+                    table.PrimaryKey("PK_TemplateModels", x => x.GuidId);
                 });
         }
 
@@ -31,7 +31,7 @@ namespace RestApiTemplate.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Templates");
+                name: "TemplateModels");
         }
     }
 }

@@ -24,11 +24,9 @@ namespace RestApiTemplate.Api.Migrations
 
             modelBuilder.Entity("RestApiTemplate.Api.Models.TemplateModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("GuidId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateLastModified")
                         .HasColumnType("datetime2");
@@ -43,9 +41,9 @@ namespace RestApiTemplate.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("GuidId");
 
-                    b.ToTable("Templates");
+                    b.ToTable("TemplateModels");
                 });
 #pragma warning restore 612, 618
         }

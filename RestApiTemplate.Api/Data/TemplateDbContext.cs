@@ -7,7 +7,7 @@ namespace RestApiTemplate.Api.Data
     {
         public TemplateDbContext(DbContextOptions<TemplateDbContext> options) : base(options) { }
 
-        public DbSet<TemplateModel> Templates { get; set; }
+        public DbSet<TemplateModel> TemplateModels => Set<TemplateModel>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -15,8 +15,10 @@ namespace RestApiTemplate.Api.Data
 
             modelBuilder.Entity<TemplateModel>(templateModel =>
             {
-                templateModel.HasKey(x => x.Id);
-                templateModel.Property(x => x.Name).IsRequired();
+                templateModel.HasKey(x => x.GuidId);
+
+                templateModel.Property(x => x.Name).IsRequired()
+                    .HasMaxLength(50);
             });
         } 
     }
