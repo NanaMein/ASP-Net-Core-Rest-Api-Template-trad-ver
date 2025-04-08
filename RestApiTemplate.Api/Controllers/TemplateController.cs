@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestApiTemplate.Api.Data;
 using RestApiTemplate.Api.DTOs;
 using RestApiTemplate.Api.Models;
 using RestApiTemplate.Api.Services;
@@ -12,10 +13,12 @@ namespace RestApiTemplate.Api.Controllers
     public class TemplateController : ControllerBase
     {
         private readonly ITemplateService service;
+        private readonly TemplateDbContext context;
 
-        public TemplateController(ITemplateService service)
+        public TemplateController(ITemplateService service, TemplateDbContext context)
         {
             this.service = service;
+            this.context = context;
         }
 
         [HttpGet]
@@ -24,11 +27,19 @@ namespace RestApiTemplate.Api.Controllers
             return Ok(await service.GetAllAsync()); 
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> ReadById(int id) 
-        { 
-            var existingTemplate = await service.GetByIdAsync(id);
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<TemplateModelDtoPostResponse>> ReadById(int id) 
+        {
+            return Ok(await context.Templates.FindAsync(id));
 
+            //if (x == null) { return StatusCode(500, "what the fuck is wrong in my service and repository"); }
+
+            var checkingData = await service.ExisitingDataAsync(id);
+            if (checkingData == false) { return StatusCode(500, "what the fuck"); }
+            //if (id <= 0) { return BadRequest(); }
+            var existingTemplate = await service.GetByIdAsync(id);
+            
             if (existingTemplate == null) 
             {
                 return NotFound();

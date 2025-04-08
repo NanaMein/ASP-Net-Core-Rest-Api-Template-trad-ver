@@ -29,5 +29,8 @@ namespace RestApiTemplate.Api.Controllers
             if (resetDb == false) { return BadRequest(); }
             return Ok();
         }
+
+        //[HttpGet("get-id-by-test")]
+        //[Route("{id:int}")]
     }
 }
