@@ -28,6 +28,7 @@ namespace RestApiTemplate.Api.ConfigExtension
             //For strategy pattern
             builder.Services.AddScoped<IDateOnlyValue, DateOnlyValue>();
             builder.Services.AddScoped<IDateTimeValue, DateTimeValue>();
+            builder.Services.AddScoped<INullableGuidConverter, NullableGuidConverter>();
 
         }
     }
