@@ -49,10 +49,6 @@ namespace RestApiTemplate.Api.Services
 
         public async Task<TemplateModelDtoPostResponse?> GetByIdAsync(Guid id)//HTTP GET by id
         {
-            //if (id == null) 
-            //{
-            //    return null; 
-            //}
 
             var existingId = await repository.GetByIdRepository(id);
             if (existingId == null) 
