@@ -14,21 +14,21 @@ namespace RestApiTemplate.Api.Controllers
     [ApiController]
     public class TemplateController : ControllerBase
     {
-        private readonly ITemplateService service;
-        private readonly TemplateDbContext context;
-        private readonly INullableGuidConverter converter;
+        private readonly ITemplateService _service;
+        //private readonly TemplateDbContext _context;
+        private readonly INullableGuidConverter _converter;
 
         public TemplateController(ITemplateService service, TemplateDbContext context, INullableGuidConverter converter)
         {
-            this.service = service;
-            this.context = context;
-            this.converter = converter;
+            _service = service;
+            //_context = context;
+            _converter = converter;
         }
 
         [HttpGet("v1")]
         public async Task<IActionResult> ReadAll() 
         {
-            return Ok(await service.GetAllAsync()); 
+            return Ok(await _service.GetAllAsync()); 
         }
 
         [HttpGet]
@@ -42,7 +42,7 @@ namespace RestApiTemplate.Api.Controllers
 
             try
             {
-                var existingId = await service.GetByIdAsync(id);
+                var existingId = await _service.GetByIdAsync(id);
                 if (existingId != null)
                 {
                     return Ok(existingId); 
@@ -68,7 +68,7 @@ namespace RestApiTemplate.Api.Controllers
 
             try
             {
-                var (guid, createdTemplate) = await service.CreateTemplateAsync(dto);
+                var (guid, createdTemplate) = await _service.CreateTemplateAsync(dto);
 
                 return CreatedAtAction(nameof(ReadById), new { id = guid }, createdTemplate);
             }
@@ -97,7 +97,7 @@ namespace RestApiTemplate.Api.Controllers
 
             try
             {
-                var updatedTemplate = await service.UpdateTemplateAsync(id, dto);
+                var updatedTemplate = await _service.UpdateTemplateAsync(id, dto);
 
                 if (updatedTemplate == null) 
                 {
@@ -117,7 +117,7 @@ namespace RestApiTemplate.Api.Controllers
         [Route("v1/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id) 
         {
-            var deletedTemplate = await service.DeleteTemplateAsync(id);
+            var deletedTemplate = await _service.DeleteTemplateAsync(id);
             if (deletedTemplate == false) 
             {
                 return NotFound(); 
