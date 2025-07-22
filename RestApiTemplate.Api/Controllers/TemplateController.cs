@@ -15,13 +15,13 @@ namespace RestApiTemplate.Api.Controllers
     public class TemplateController : ControllerBase
     {
         private readonly ITemplateService _service;
-        //private readonly TemplateDbContext _context;
+        private readonly TemplateDbContext _context;
         private readonly INullableGuidConverter _converter;
 
         public TemplateController(ITemplateService service, TemplateDbContext context, INullableGuidConverter converter)
         {
             _service = service;
-            //_context = context;
+            _context = context;
             _converter = converter;
         }
 
@@ -107,23 +107,43 @@ namespace RestApiTemplate.Api.Controllers
                 return Ok(updatedTemplate);
             }
 
-            catch 
-            { 
-                return BadRequest();
+            catch (Exception)
+            {
+                var problemDetails = new ProblemDetails
+                {
+                    Status = 500,
+                    Title = "Internal Server Error",
+                    Detail = "An unexpected error occurred. Please try again later."
+                };
+                return StatusCode(500, problemDetails);
             }
         }
 
         [HttpDelete]
         [Route("v1/{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id) 
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var deletedTemplate = await _service.DeleteTemplateAsync(id);
-            if (deletedTemplate == false) 
+            try
             {
-                return NotFound(); 
+                var deletedTemplate = await _service.DeleteTemplateAsync(id);
+                if (deletedTemplate == false)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
             }
 
-            return NoContent(); 
+            catch (Exception)
+            {
+                var problemDetails = new ProblemDetails
+                {
+                    Status = 500,
+                    Title = "Internal Server Error",
+                    Detail = "An unexpected error occurred. Please try again later."
+                };
+                return StatusCode(500, problemDetails);
+            }
         }
 
         

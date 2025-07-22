@@ -9,23 +9,23 @@ namespace RestApiTemplate.Api.Controllers
     [ApiController]
     public class ForTestingController : ControllerBase
     {
-        private readonly ITemplateService service;
+        private readonly ITemplateService _service;
 
         public ForTestingController(ITemplateService service)
         {
-            this.service = service;
+            _service = service;
         }
 
         [HttpGet("get-all-no-filter")]
         public async Task<IActionResult> Get() 
         {
-            return Ok(await service.TestingGetAllAsync());        
+            return Ok(await _service.TestingGetAllAsync());        
         }
 
         [HttpDelete("reset-database")]
         public async Task<IActionResult> ResetDatabase()
         {
-            var resetDb = await service.ResetAllTemplateDatabaseAsync();
+            var resetDb = await _service.ResetAllTemplateDatabaseAsync();
             if (resetDb == false) { return BadRequest(); }
             return Ok();
         }

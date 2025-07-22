@@ -8,17 +8,17 @@ namespace RestApiTemplate.Api.Services
 {
     public class TemplateService : ITemplateService
     {
-        private readonly ITemplateRepository repository;
-        private readonly IMapper mapper;
-        private readonly IDateOnlyValue dateOnly;
-        private readonly IDateTimeValue dateTime;
+        private readonly ITemplateRepository _repository;
+        private readonly IMapper _mapper;
+        private readonly IDateOnlyValue _dateOnly;
+        private readonly IDateTimeValue _dateTime;
 
         public TemplateService(ITemplateRepository repository, IMapper mapper, IDateOnlyValue dateOnly, IDateTimeValue dateTime)
         {
-            this.repository = repository;
-            this.mapper = mapper;
-            this.dateOnly = dateOnly;
-            this.dateTime = dateTime;
+            _repository = repository;
+            _mapper = mapper;
+            _dateOnly = dateOnly;
+            _dateTime = dateTime;
         }
 
         public async Task<(Guid Id, TemplateModelDtoPostResponse)> CreateTemplateAsync(TemplateModelDtoPostRequest dto)//HTTP POST
@@ -26,14 +26,14 @@ namespace RestApiTemplate.Api.Services
             var newTemplate = new TemplateModel
             {
                 Name = dto.Name,
-                DateOnlyCreated = dateOnly.GenerateValue(),
-                DateTimeCreated = dateTime.GenerateValue(),
-                DateLastModified = dateTime.GenerateValue()
+                DateOnlyCreated = _dateOnly.GenerateValue(),
+                DateTimeCreated = _dateTime.GenerateValue(),
+                DateLastModified = _dateTime.GenerateValue()
             };
 
-            var createdTemplate = await repository.CreateTemplateRepository(newTemplate);
+            var createdTemplate = await _repository.CreateTemplateRepository(newTemplate);
 
-            var dtoResponse = mapper.Map<TemplateModelDtoPostResponse>(createdTemplate);
+            var dtoResponse = _mapper.Map<TemplateModelDtoPostResponse>(createdTemplate);
 
             return (createdTemplate.GuidId, dtoResponse);
 
@@ -42,21 +42,21 @@ namespace RestApiTemplate.Api.Services
 
         public async Task<List<TemplateModelDtoPostResponse>> GetAllAsync()//HTTP GET
         {
-            var originalList = await repository.GetAllRepository();
-            var dtoList = mapper.Map<List<TemplateModelDtoPostResponse>>(originalList);
+            var originalList = await _repository.GetAllRepository();
+            var dtoList = _mapper.Map<List<TemplateModelDtoPostResponse>>(originalList);
             return dtoList;
         }
 
         public async Task<TemplateModelDtoPostResponse?> GetByIdAsync(Guid id)//HTTP GET by id
         {
 
-            var existingId = await repository.GetByIdRepository(id);
+            var existingId = await _repository.GetByIdRepository(id);
             if (existingId == null) 
             {
                 return null;
             }
 
-            return mapper.Map<TemplateModelDtoPostResponse>(existingId);
+            return _mapper.Map<TemplateModelDtoPostResponse>(existingId);
         }
 
         public async Task<TemplateModelDtoPostResponse?> UpdateTemplateAsync(Guid id, TemplateModelDtoPostRequest dto)//HTTP PUT
@@ -67,18 +67,18 @@ namespace RestApiTemplate.Api.Services
             {
                 GuidId = id,
                 Name = dto.Name,
-                DateLastModified = dateTime.GenerateValue(),
+                DateLastModified = _dateTime.GenerateValue(),
             };
 
-            var updatedTemplate = await repository.UpdateTemplateRepository(updatingTemplate);
+            var updatedTemplate = await _repository.UpdateTemplateRepository(updatingTemplate);
 
-            return mapper.Map<TemplateModelDtoPostResponse?>(updatedTemplate);
+            return _mapper.Map<TemplateModelDtoPostResponse?>(updatedTemplate);
 
         }
 
         public async Task<bool> DeleteTemplateAsync(Guid id)//HTTP DELETE
         {
-            return await repository.DeleteTemplateRepository(id);
+            return await _repository.DeleteTemplateRepository(id);
         }
 
 
@@ -91,17 +91,17 @@ namespace RestApiTemplate.Api.Services
 
         public async Task<List<TemplateModel>> TestingGetAllAsync()
         {
-            return await repository.GetAllRepository();
+            return await _repository.GetAllRepository();
         }
 
         public async Task<bool> ResetAllTemplateDatabaseAsync()
         {
-            return await repository.ResetAllTemplateDatabaseRepository();
+            return await _repository.ResetAllTemplateDatabaseRepository();
         }
 
         public async Task<bool> ExisitingDataAsync(Guid id)
         {
-            return await repository.ExistingDataInRepository(id);
+            return await _repository.ExistingDataInRepository(id);
         }
 
     }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestApiTemplate.Api.Data;
-using RestApiTemplate.Api.Mappings;
 using RestApiTemplate.Api.Repositories;
 using RestApiTemplate.Api.Services;
 using RestApiTemplate.Api.ValueGenerators;
-
+using RestApiTemplate.Api.Mappings;
+//using Microsoft.Extensions.DependencyInjection;
 namespace RestApiTemplate.Api.ConfigExtension
 {
     public static class ConfigServiceExtender
